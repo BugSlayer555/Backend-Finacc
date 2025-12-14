@@ -32,7 +32,7 @@ const getConfirmationEmailHTML = (name: string) => `
               </p>
               
               <p style="color: #6B6B6B; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-                Our team will review your inquiry and get back to you within <strong style="color: #1E90FF;">24 hours</strong>. If your matter is urgent, please feel free to call us at <a href="tel:+442081338875" style="color: #1E90FF; text-decoration: none;">+44 20 8133 8875</a>.
+                Our team will review your inquiry and get back to you within <strong style="color: #1E90FF;">24 hours</strong>. If your matter is urgent, please feel free to call us at <a href="tel:+917011701023" style="color: #1E90FF; text-decoration: none;">+91 7011701023</a>.
               </p>
               
               <!-- CTA Box -->
@@ -55,8 +55,8 @@ const getConfirmationEmailHTML = (name: string) => `
             <td style="background-color: #f9f9f9; padding: 30px; text-align: center; border-top: 1px solid #E9E9E9;">
               <p style="color: #6B6B6B; font-size: 12px; margin: 0 0 10px 0;">
                 <strong style="color: #0a0a0a;">Contact Us</strong><br>
-                Email: <a href="mailto:hello@finaccoutsourcing.com" style="color: #1E90FF; text-decoration: none;">hello@finaccoutsourcing.com</a><br>
-                Phone: <a href="tel:+442081338875" style="color: #1E90FF; text-decoration: none;">+44 20 8133 8875</a>
+                Email: <a href="mailto:info@finaccoutsourcings.com" style="color: #1E90FF; text-decoration: none;">info@finaccoutsourcings.com</a><br>
+                Phone: <a href="tel:+917011701023" style="color: #1E90FF; text-decoration: none;">+91 7011701023</a>
               </p>
               <p style="color: #6B6B6B; font-size: 12px; margin: 10px 0 0 0;">
                 S140, Rajendra Place, Delhi, 110008, India
@@ -162,6 +162,19 @@ const getNotificationEmailHTML = (data: {
 `;
 
 export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      },
+      body: "",
+    };
+  }
+
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
@@ -191,13 +204,18 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
     }
 
     // Get environment variables
-    const smtpUser = process.env.SMTP_USER || "bugslayer555@gmail.com";
-    const smtpPass = process.env.SMTP_PASS || "yantzzhpinjtmqvb";
-    const recipientEmail = process.env.RECIPIENT_EMAIL || "bugslayer555@gmail.com";
+    // Get environment variables
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const recipientEmail = process.env.RECIPIENT_EMAIL;
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT;
 
     // Create transporter
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: smtpHost,
+      port: Number(smtpPort),
+      secure: Number(smtpPort) === 465, // true for 465, false for other ports
       auth: {
         user: smtpUser,
         pass: smtpPass,
