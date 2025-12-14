@@ -210,6 +210,11 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
     const recipientEmail = process.env.RECIPIENT_EMAIL;
     const smtpHost = process.env.SMTP_HOST;
     const smtpPort = process.env.SMTP_PORT;
+    console.log("SMTP CHECK:", {
+      host: smtpHost,
+      port: smtpPort,
+      user: smtpUser,
+    });
 
     // Create transporter
     const transporter = nodemailer.createTransport({
