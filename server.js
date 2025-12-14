@@ -176,6 +176,12 @@ app.post("/api/send-email", async (req, res) => {
     const smtpHost = process.env.SMTP_HOST;
     const smtpPort = process.env.SMTP_PORT;
 
+    console.log("SMTP CHECK:", {
+      host: smtpHost,
+      port: smtpPort,
+      user: smtpUser,
+    });
+
     // Create transporter
     const transporter = nodemailer.createTransport({
       host: smtpHost,
