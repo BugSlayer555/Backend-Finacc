@@ -3,7 +3,14 @@ import cors from "cors";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from root directory (one level up)
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const app = express();
 const PORT = 3001;
@@ -37,7 +44,7 @@ const getConfirmationEmailHTML = (name) => `
                 We've received your message and truly appreciate you taking the time to reach out to us.
               </p>
               <p style="color: #6B6B6B; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-                Our team will review your inquiry and get back to you within <strong style="color: #1E90FF;">24 hours</strong>. If your matter is urgent, please feel free to call us at <a href="tel:+442081338875" style="color: #1E90FF; text-decoration: none;">+44 20 8133 8875</a>.
+                Our team will review your inquiry and get back to you within <strong style="color: #1E90FF;">24 hours</strong>. If your matter is urgent, please feel free to call us at <a href="tel:+917011701023" style="color: #1E90FF; text-decoration: none;">+91 7011701023</a>.
               </p>
               <div style="background-color: #f9f9f9; border-left: 4px solid #1E90FF; padding: 20px; border-radius: 8px; margin: 30px 0;">
                 <p style="color: #0a0a0a; font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Free Trial Offer</p>
@@ -55,8 +62,8 @@ const getConfirmationEmailHTML = (name) => `
             <td style="background-color: #f9f9f9; padding: 30px; text-align: center; border-top: 1px solid #E9E9E9;">
               <p style="color: #6B6B6B; font-size: 12px; margin: 0 0 10px 0;">
                 <strong style="color: #0a0a0a;">Contact Us</strong><br>
-                Email: <a href="mailto:hello@finaccoutsourcing.com" style="color: #1E90FF; text-decoration: none;">hello@finaccoutsourcing.com</a><br>
-                Phone: <a href="tel:+442081338875" style="color: #1E90FF; text-decoration: none;">+44 20 8133 8875</a>
+                Email: <a href="mailto:info@finaccoutsourcings.com" style="color: #1E90FF; text-decoration: none;">info@finaccoutsourcings.com</a><br>
+                Phone: <a href="tel:+917011701023" style="color: #1E90FF; text-decoration: none;">+91 7011701023</a>
               </p>
               <p style="color: #6B6B6B; font-size: 12px; margin: 10px 0 0 0;">
                 S140, Rajendra Place, Delhi, 110008, India
@@ -163,13 +170,17 @@ app.post("/api/send-email", async (req, res) => {
     }
 
     // Get environment variables
-    const smtpUser = process.env.SMTP_USER || "bugslayer555@gmail.com";
-    const smtpPass = process.env.SMTP_PASS || "yantzzhpinjtmqvb";
-    const recipientEmail = process.env.RECIPIENT_EMAIL || "bugslayer555@gmail.com";
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const recipientEmail = process.env.RECIPIENT_EMAIL;
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT;
 
     // Create transporter
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: smtpHost,
+      port: Number(smtpPort),
+      secure: Number(smtpPort) === 465, // true for 465, false for other ports
       auth: {
         user: smtpUser,
         pass: smtpPass,
